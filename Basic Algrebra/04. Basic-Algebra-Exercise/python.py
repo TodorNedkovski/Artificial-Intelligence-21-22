@@ -1,28 +1,64 @@
-from turtle import *
+def encode(text):
+    """
+    Returns the run-length encoded version of the text
+    (numbers after symbols, length = 1 is skipped)
+    """
+    
+    res = []
+    string = ''
 
-t = Turtle()
+    currChar = ''
+    for char in text:
+        
+        if currChar != char:
+            currChar = char
+            res.append(currChar)
+            res.append(1)
+        else:
+            index = len(res) - 1
 
-def draw_branch(branch_length, angle):
-    if branch_length > 5:
-        t.width(branch_length/10)
-        t.forward(branch_length)
-        t.right(angle)
-        draw_branch(branch_length - 15, angle)
-        t.left(2 * angle)
-        draw_branch(branch_length - 15, angle)
-        t.right(angle)
-        t.backward(branch_length)
+            res[index] = res[index] + 1 
+    
+    while len(res) > 0:
+        string = string + res.pop(0) + str(res.pop(0))
 
-#draw_branch(100, 60)
+    return string.replace("1", "")
+        
+        
+def printAmount(char, count):
+    string = ''
+    for index in range(int(count)):
+        string = string + char
+    return string
 
-def draw_tree(trunk_length, angle):
-    t.speed("fastest")
-    t.left(90)
-    t.up()
-    t.backward(trunk_length)
-    t.down()
-    draw_branch(trunk_length, angle)
-    done()
 
-draw_tree(100, 20)
-done()
+def decode(text):
+    """
+    Decodes the text using run-length encoding
+    """
+    string = ''
+
+    currChar = ''
+    amount = 1
+    for char in text:
+
+        if char.isnumeric():
+            amount = int(char) - 1
+        else:
+            currChar = char
+            amount = 1
+        string = string + printAmount(currChar, amount)
+    
+    return string
+
+print(decode("A2BC3DE4"))
+
+
+# Tests
+# Test that the functions work on their own
+assert encode("AABCCCDEEEE") == "A2BC3DE4"
+assert decode("A2BC3DE4") == "AABCCCDEEEE"
+
+# Test that the functions really invert each other
+assert decode(encode("AABCCCDEEEE")) == "AABCCCDEEEE"
+assert encode(decode("A2BC3DE4")) == "A2BC3DE4"
