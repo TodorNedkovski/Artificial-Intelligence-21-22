@@ -4,6 +4,7 @@ t = Turtle()
 
 def draw_branch(branch_length, angle):
     if branch_length > 5:
+        t.width(branch_length/10)
         t.forward(branch_length)
         t.right(angle)
         draw_branch(branch_length - 15, angle)
